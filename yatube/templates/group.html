@@ -8,7 +8,7 @@
                 <p>{{ post.text }}</p>
                 <hr>
             {% endfor %}
-<!--{% if posts.has_other_pages %}-->
-<!--    {% include "paginator.html" with items=posts paginator=paginator %}-->
-<!--{% endif %}-->
+{% if posts.has_other_pages %}
+    {% include "paginator.html" with items=posts paginator=paginator %}
+{% endif %}
 {% endblock %}

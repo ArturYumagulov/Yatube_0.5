@@ -10,5 +10,8 @@
     <p>{{ post.text|linebreaksbr }}</p>
     {% if not forloop.last %}<hr>{% endif %}
     {% endfor %}
+    {% if posts.has_other_pages %}
+        {% include "paginator.html" with items=posts paginator=paginator %}
+{% endif %}
 
 {% endblock %}
