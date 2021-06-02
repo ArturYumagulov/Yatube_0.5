@@ -56,11 +56,31 @@ def post_edit(request, username, post_id):
     """Старница редактирования поста"""
 
     new = Post.objects.get(pk=post_id)
-    if request.method == "POST":
-        form = PostForm(request.POST, instance=new)
-        if form.is_valid():
-            new.save()
-            return redirect('index')
+    if new.author == request.user:
+        if request.method == "POST":
+            form = PostForm(request.POST, instance=new)
+            if form.is_valid():
+                new.save()
+                return redirect('post_view', username=username, post_id=post_id)
+    else:
+        return redirect('post_view', post_id=post_id, username=username)
 
     form = PostForm
     return render(request, 'post_edit.html', {'form': form})
+
+
+@login_required
+def new_post(request):
+    """Страница создания поста"""
+
+    if request.method == "POST":
+        form = PostForm(request.POST)
+        if form.is_valid():
+            new = form.save(commit=False)
+            new.author = request.user
+            new.save()
+            return redirect('post_view', post_id=new.pk, username=new.author)
+        return redirect('index')
+
+    form = PostForm()
+    return render(request, "new.html", {'form': form})
