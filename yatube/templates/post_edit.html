@@ -1,12 +1,13 @@
 {% extends "base.html" %}
-{% block title %}Сброс пароля{% endblock %}
+{% block title %}Добавить запись{% endblock %}
 {% block content %}
 {% load user_filters %}
+
 
 <div class="row justify-content-center">
     <div class="col-md-8 p-5">
         <div class="card">
-            <div class="card-header">Чтобы сбросить старый пароль — введите адрес электронной почты, под которым вы регистрировались</div>
+            <div class="card-header text-md-center">Редактировать запись</div>
             <div class="card-body">
 
                 <form method="post">
@@ -26,7 +27,7 @@
 
                     <div class="col-md-6 offset-md-4">
                             <button type="submit" class="btn btn-primary">
-                                Сбросить пароль
+                                Сохранить
                             </button>
                     </div>
                 </form>
@@ -35,5 +36,6 @@
         </div> <!-- card -->
     </div> <!-- col -->
 </div> <!-- row -->
+
 
 {% endblock %}
