@@ -10,7 +10,7 @@
             <div class="card-header text-md-center">Редактировать запись</div>
             <div class="card-body">
 
-                <form method="post">
+                <form method="post" enctype="multipart/form-data">
                     {% csrf_token %}
 
                     {% for field in form %}

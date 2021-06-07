@@ -21,6 +21,7 @@ class ProfileTest(TestCase):
             author=self.is_authenticated)
 
     def test_profile(self):
+        """Тест на авторизацию пользователя, создание и изменения записи"""
         self.client.force_login(self.is_authenticated)
         response = self.client.post('/new/', {'text': 'тест тест'}, follow=True)
         p = Post.objects.get(text='тест тест')
@@ -35,7 +36,13 @@ class ProfileTest(TestCase):
         self.assertContains(res, edit_post), "Пост не изменен"
 
     def test_edit_post_no_login(self):
+        """Тест на возможность изменения поста не залогиненым пользователем"""
         edited = self.client.post(f'/profile/sarah/{self.post.pk}/edit/',
                                   {'text': 'edit_post', 'username': 'test', 'post_id': self.post.pk}, follow=True)
         self.assertRedirects(edited, f"/auth/login/?next=/profile/sarah/{self.post.pk}/edit/")
 
+    def test_404_error(self):
+        """Тест на проверку верного шаблона при ошибке"""
+        response = self.client.get('/profile/loe/')
+        if response.status_code == 404:
+            self.assertTemplateUsed(response, 'misc/404.html'), "Шаблон не верен"
