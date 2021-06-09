@@ -1,9 +1,11 @@
+from django.http import Http404
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Post, Group, User, Comments
 from django.core.paginator import Paginator
 from django.core.exceptions import ObjectDoesNotExist
 from .forms import PostForm, CommentsAddForm
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.cache import cache_page
 
 
 def index(request):
@@ -44,11 +46,9 @@ def post_views(request, username, post_id):
     """Страница отображения поста"""
     comments = Comments.objects.filter(post=post_id).order_by('-created').all()
     user = get_object_or_404(User, username=username)
-    try:
-        post = Post.objects.filter(author=user).get(pk=post_id)
-        return render(request, 'post.html', {'post': post, 'items': comments})
-    except ObjectDoesNotExist:
-        return redirect('index')
+    queryset = Post.objects.filter(author=user)
+    post = get_object_or_404(queryset, pk=post_id)
+    return render(request, 'post.html', {'post': post, 'items': comments})
 
 
 @login_required
