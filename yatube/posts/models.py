@@ -38,3 +38,15 @@ class Comments(models.Model):
 
     def __str__(self):
         return f"{self.author}: {self.text}"
+
+
+class Follow(models.Model):
+    """Класс таблицы подписок на авторов постов"""
+
+    # ссылка на объект пользователя, который подписывается
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="follower")
+    # ссылка на объект пользователя, на которого подписываются
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="following")
+
+    def __str__(self):
+        return f"{self.user} подписан на {self.author}"

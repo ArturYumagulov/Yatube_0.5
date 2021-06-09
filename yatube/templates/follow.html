@@ -1,17 +1,16 @@
 {% extends "base.html" %}
 {% block title %} Последние обновления {% endblock %}
 {% block content %}
-{% load cache %}
+
     <div class="container">
          {% include "menu.html" with index=True %}
            <h1 class="text-md-center"> Последние обновления на сайте</h1>
             <!-- Вывод ленты записей -->
-        {% cache 20 index_page %}
                 {% for post in posts %}
                   <!-- Вот он, новый include! -->
                     {% include "post_item.html" with post=post %}
                 {% endfor %}
-        {% endcache %}
+
     </div>
 
         <!-- Вывод паджинатора -->
@@ -20,4 +19,3 @@
         {% endif %}
 
 {% endblock %}
-

@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Post, Group, Comments
+from .models import Post, Group, Comments, Follow
 
 
 class PostForm(forms.ModelForm):
@@ -22,3 +22,18 @@ class CommentsAddForm(forms.ModelForm):
     class Meta:
         model = Comments
         fields = ('text',)
+
+
+class FollowForm(forms.ModelForm):
+    """"""
+    class Meta:
+        model = Follow
+        labels = {
+            'user': 'пользователь подписывается на',
+            'author': 'Автор данной записи'
+        }
+        help_texts = {
+            'user': 'Вы подписываетесь на',
+            'author': 'Автор данной записи'
+        }
+        fields = ['user']
