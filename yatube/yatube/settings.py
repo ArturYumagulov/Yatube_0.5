@@ -45,11 +45,13 @@ INSTALLED_APPS = [
 
     'users.apps.UsersConfig',
     'posts.apps.PostsConfig',
+    'yatube_api.apps.YatubeApiConfig',
     'django.contrib.sites',
     'django.contrib.flatpages',
     'sorl.thumbnail',
     'debug_toolbar',
     'rest_framework',
+    'rest_framework.authtoken',   # приложение для выдачи токена
 ]
 
 MIDDLEWARE = [
@@ -164,3 +166,14 @@ SITE_ID = 1
 INTERNAL_IPS = [
     "127.0.0.1",
 ]
+
+# метод аутентификации (через токен)
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ]
+}
