@@ -103,13 +103,14 @@ def server_error(request):
     return render(request, "misc/500.html", status=500)
 
 
+@login_required
 def add_comment(request, post_id, username):
     """Страница комментирования поста"""
 
+    form = CommentsAddForm(request.POST)
+    post = Post.objects.get(pk=post_id)
+    author = User.objects.get(username=request.user)
     if request.method == "POST":
-        form = CommentsAddForm(request.POST)
-        post = Post.objects.get(pk=post_id)
-        author = User.objects.get(username=request.user)
         if form.is_valid():
             comment = form.save(commit=False)
             comment.author = author
@@ -118,9 +119,10 @@ def add_comment(request, post_id, username):
             return redirect('post_view', post_id=post_id, username=post.author)
         return redirect('post_view', post_id=post_id, username=post.author)
     form = CommentsAddForm()
-    return redirect('index')
+    return redirect('post_view', post_id=post_id, username=post.author)
 
 
+@login_required
 def follow_index(request):
     """Вывод постов подписанных авторов"""
 
@@ -132,6 +134,7 @@ def follow_index(request):
     return render(request, 'follow.html', {'posts': pages, 'paginator': paginator})
 
 
+@login_required
 def profile_follow(request, username):
     """Подписка на автора"""
 
@@ -155,7 +158,7 @@ def profile_unfollow(request, username):
     if request.method == "POST":
         form = FollowForm(request.POST)
         if form.is_valid():
-            form.save()
+            form.delete()
             return redirect('profile', username=username)
     else:
         follow = Follow.objects.get(author=author, user=user)

@@ -65,3 +65,21 @@ class ProfileTest(TestCase):
             author=self.is_authenticated)
         response_2 = self.client.get(reverse('index'))
         self.assertNotContains(response_2, test_post.text), "Пост некеширован"
+
+    def test_follow_auth_user(self):
+        """Возможность подписки только авторизованного пользователя"""
+
+        self.client.force_login(self.is_authenticated)
+        response = self.client.get(f'/profile/{self.post.author}/follow/', follow=True)
+        self.assertTrue(response.context['following']), "авторизованный пользователь не смог подписаться"
+        res = self.client.get('/follow/')
+        self.assertTrue(res.context['post'], self.post), "Лист с новостями авторов в подписке не выводится"
+
+    def test_follow_un_auth_user(self):
+        """Невозможность подписки неавторизованного пользователя"""
+        response = self.client.get(f'/profile/{self.post.author}/follow/', follow=True)
+        self.assertRedirects(response, f'/auth/login/?next=/profile/{self.post.author}/follow/'), \
+                                        "неавторизованный пользователь смог подписаться"
+        res = self.client.get('/follow/')
+        self.assertRedirects(response, f'/auth/login/?next=/profile/{self.post.author}/follow/'), \
+                                        "Лист с новостями авторов в подписке выводится"
