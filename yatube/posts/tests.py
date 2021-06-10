@@ -81,5 +81,5 @@ class ProfileTest(TestCase):
         self.assertRedirects(response, f'/auth/login/?next=/profile/{self.post.author}/follow/'), \
                                         "неавторизованный пользователь смог подписаться"
         res = self.client.get('/follow/')
-        self.assertRedirects(response, f'/auth/login/?next=/profile/{self.post.author}/follow/'), \
+        self.assertRedirects(res, f'/auth/login/?next=/follow/'), \
                                         "Лист с новостями авторов в подписке выводится"
