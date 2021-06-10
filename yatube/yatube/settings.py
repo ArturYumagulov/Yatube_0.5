@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.flatpages',
     'sorl.thumbnail',
     'debug_toolbar',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
