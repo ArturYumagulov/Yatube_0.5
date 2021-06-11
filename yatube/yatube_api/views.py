@@ -1,6 +1,6 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from posts.models import Post
+from posts.models import Post # noqa
 from .serializers import PostSerializer
 from rest_framework import status
 
