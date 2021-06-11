@@ -26,7 +26,7 @@ urlpatterns = [
     path('', include('posts.urls')),
     path('admin/', admin.site.urls),
     path('about/', include('django.contrib.flatpages.urls')),
-    path('api/', include("yatube_api.urls")),
+    path('api/v1/', include("yatube_api.urls")),
 ]
 
 handler404 = 'posts.views.page_not_found' # noqa

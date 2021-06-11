@@ -1,43 +1,50 @@
-from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from posts.models import Post # noqa
+from rest_framework.viewsets import ModelViewSet
+from posts.models import Post, User  # noqa
 from .serializers import PostSerializer
 from rest_framework import status
 
 
-@api_view(['GET'])
-def api_post_views(requests):
-    if requests.method == 'GET':
-        posts = Post.objects.all()
-        serializer = PostSerializer(posts, many=True)
+class PostViewsSet(ModelViewSet):
+    """Класс CRUD для постов для API"""
+
+    serializer_class = PostSerializer
+    queryset = Post.objects.all()
+
+    def list(self, request, *args, **kwargs):
+        """Вывод всех постов"""
+
+        queryset = self.queryset.order_by('-pub_date').all()
+        serializer = self.serializer_class(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    def partial_update(self, request, pk=None):  # noqa
+        """Изменение существующего поста"""
 
-@api_view(['POST', 'PUT'])
-def api_post_add(requests):
-    if requests.method == "POST":
-        serializer = PostSerializer(data=requests.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-@api_view(['PATCH', 'PUT'])
-def api_post_edit(requests):
-        if requests.method == 'PATCH' or requests.method == 'PUT':
-            post = Post.objects.get(pk=requests.data['id'])
-            serializer = PostSerializer(post, data=requests.data)
+        post = self.queryset.get(pk=pk)
+        serializer = self.serializer_class(post, data=request.data)
+        if post.author == request.user:
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
-            return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_403_FORBIDDEN)
 
+    def destroy(self, request, pk=None):  # noqa
+        """Удаление поста"""
 
-@api_view(['DELETE'])
-def api_post_del(requests):
-    if requests.method == "DELETE":
-        post = Post.objects.get(pk=requests.data['id'])
-        post.delete()
-        return Response({'message': 'post delete'}, status=status.HTTP_204_NO_CONTENT)
-    return Response(status=status.HTTP_400_BAD_REQUEST)
+        post = self.queryset.get(pk=pk)
+        serializer = self.serializer_class(post)
+        if post.author == request.user:
+            post.delete()
+            return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
+        return Response(serializer.errors)
+
+    def create(self, request):  # noqa
+        """Создание поста"""
+
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
