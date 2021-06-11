@@ -127,7 +127,7 @@ def follow_index(request):
     """Вывод постов подписанных авторов"""
 
     user_follows = get_object_or_404(User, pk=request.user.id).follower.all().values_list('author')
-    posts_list = Post.objects.filter(author__in=user_follows)
+    posts_list = Post.objects.filter(author__in=user_follows).order_by('-pub_date').all()
     paginator = Paginator(posts_list, 5)
     page_number = request.GET.get('page')
     pages = paginator.get_page(page_number)
