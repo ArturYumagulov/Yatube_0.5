@@ -3,16 +3,15 @@ from rest_framework.authtoken import views
 from rest_framework.routers import DefaultRouter
 
 
-from .views import PostViewsSet
+from .views import PostViewsSet, CommentsViewsSet
 
 
 router = DefaultRouter()
 router.register('posts', PostViewsSet, basename="api_posts")
+router.register(r'posts/(?P<post_id>[0-9]+)/comments', CommentsViewsSet, basename="api_comments")
+
 
 urlpatterns = [
     path('token-auth/', views.obtain_auth_token),  # авторизация (получение токена)
     path('', include(router.urls)),
-    # path('posts/add/', api_post_add, name='api_post_add'),
-    # path('posts/edit/', api_post_edit, name='api_post_edit'),
-    # path('posts/delete/', api_post_del, name='api_post_delete')
 ]
