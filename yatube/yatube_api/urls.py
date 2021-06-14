@@ -12,6 +12,6 @@ router.register(r'posts/(?P<post_id>[0-9]+)/comments', CommentsViewsSet, basenam
 
 
 urlpatterns = [
-    path('token-auth/', views.obtain_auth_token),  # авторизация (получение токена)
+    path('token-auth/', views.obtain_auth_token, name="api_login"),  # авторизация (получение токена)
     path('', include(router.urls)),
 ]
